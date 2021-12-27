@@ -63,7 +63,8 @@ public abstract class AbstractXPooledConnection<ConnectionType> implements XPool
 	public long getLastTimeReleased() {
 		return lastTimeReleased;
 	}
-	
+
+	 // borrowConnection方法会调用到这里, 去获取连接
 	public synchronized ConnectionType createConnectionProxy() throws CreateConnectionException
 	{
 		if (collectStackTraceForNextReap) {
@@ -71,6 +72,7 @@ public abstract class AbstractXPooledConnection<ConnectionType> implements XPool
 		}
 		updateLastTimeAcquired();
 		testUnderlyingConnection();
+		// 基于当前的连接Connection, 创建一个代理Connection
 		currentProxy = doCreateConnectionProxy();
 		isConcurrentlyBeingAcquired.set(false);
 		if ( LOGGER.isTraceEnabled() ) LOGGER.logTrace ( this + ": returning proxy " + currentProxy );

@@ -107,9 +107,12 @@ public abstract class ConnectionPool<ConnectionType> implements XPooledConnectio
 	{
 		assertNotDestroyed();
 
-		ConnectionType ret = null;	
+		ConnectionType ret = null;
+		// 获取一个已经存在的打开的连接
 		ret = findExistingOpenConnectionForCallingThread();	
 		if (ret == null) {
+			// 如果没有, 就阻塞等待获取一个可用的连接, 拿不到就会连接超时
+			// 第一次进来是获取不到连接的, ret为null
 			ret = findOrWaitForAnAvailableConnection();		
 		}
 		return ret;
@@ -119,8 +122,10 @@ public abstract class ConnectionPool<ConnectionType> implements XPooledConnectio
 		ConnectionType ret = null;
 		long remainingTime = properties.getBorrowConnectionTimeout() * 1000L;		
 		do {
+			// 去获取连接
 			ret = retrieveFirstAvailableConnectionAndGrowPoolIfNecessary();
 			if ( ret == null ) {
+				// 阻塞等待可用连接, 返回还剩多少时间, 用waitTime减去等待时间
 				remainingTime = waitForAtLeastOneAvailableConnection(remainingTime);
 				assertNotDestroyed();
 			}
@@ -129,9 +134,11 @@ public abstract class ConnectionPool<ConnectionType> implements XPooledConnectio
 	}
 
 	private ConnectionType retrieveFirstAvailableConnectionAndGrowPoolIfNecessary() throws CreateConnectionException {
-		
+
+		// retrieveFirstAvailableConnection交给子类ConnectionPoolWithConcurrentValidation实现
 		ConnectionType ret = retrieveFirstAvailableConnection();
 		if ( ret == null && canGrow() ) {
+			// 如果获取不到连接, 就去扩展连接数量, 然后用这些原生连接去创建代理
 			growPool();
 			ret = retrieveFirstAvailableConnection();
 		}		
@@ -283,11 +290,13 @@ public abstract class ConnectionPool<ConnectionType> implements XPooledConnectio
 	 */
 	private synchronized long waitForAtLeastOneAvailableConnection(long waitTime) throws PoolExhaustedException
 	{
+		// 有可用连接就不轮询了
         while (availableSize() == 0) {
         	if ( waitTime <= 0 ) throw new PoolExhaustedException ( "ConnectionPool: pool is empty - increase either maxPoolSize or borrowConnectionTimeout" );
             long before = System.currentTimeMillis();
         	try {
         		if ( LOGGER.isTraceEnabled() ) LOGGER.logTrace ( this + ": about to wait for connection during " + waitTime + "ms...");
+				// 等待一段时间 waitTime 毫秒
         		this.wait (waitTime);
 
 			} catch (InterruptedException ex) {
@@ -300,6 +309,7 @@ public abstract class ConnectionPool<ConnectionType> implements XPooledConnectio
 			long now = System.currentTimeMillis();
             waitTime -= (now - before);
         }
+		// 返回还剩多少时间, 用waitTime减去等待时间
         return waitTime;
 	}
 

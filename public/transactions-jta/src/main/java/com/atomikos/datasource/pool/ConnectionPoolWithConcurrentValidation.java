@@ -26,6 +26,8 @@ public class ConnectionPoolWithConcurrentValidation<ConnectionType> extends Conn
 	@Override
 	protected ConnectionType recycleConnectionIfPossible() throws Exception {
 		ConnectionType ret = null;
+		// 遍历connections, 获取第一个可以回收的连接
+		// 第一次进来拿不到连接, xpc为null, 需要去创建连接
 		XPooledConnection<ConnectionType> xpc = findFirstRecyclablePooledConnectionForCallingThread();
 		if (xpc != null) {
 			ret = concurrentlyTryToRecycle(xpc);
@@ -34,6 +36,7 @@ public class ConnectionPoolWithConcurrentValidation<ConnectionType> extends Conn
 	}
 
 	@Override
+	// borrowConnection方法会调用到这里, 去获取连接
 	protected ConnectionType retrieveFirstAvailableConnection() {
 		ConnectionType ret = null;
 		XPooledConnection<ConnectionType> xpc = claimFirstAvailablePooledConnection();
@@ -56,6 +59,8 @@ public class ConnectionPoolWithConcurrentValidation<ConnectionType> extends Conn
 	private ConnectionType concurrentlyTryToUse(XPooledConnection<ConnectionType> xpc) {
 		ConnectionType ret = null;
 			try {
+				// xpc是ConnectionPool里的growPool()方法动态创建的, 内部包含了原生连接
+				// borrowConnection方法会调用到这里, 去根据原生连接创建动态代理
 				ret = xpc.createConnectionProxy();
 				// here, connection is no longer available for other threads
 			} catch ( CreateConnectionException ex ) {

@@ -85,11 +85,12 @@ public class AtomikosXAPooledConnection extends AbstractXPooledConnection<Connec
 	}
 
 
-	
+	// borrowConnection方法会调用到这里, 去获取连接
 	protected Connection doCreateConnectionProxy() throws CreateConnectionException
 	{
 		if ( LOGGER.isTraceEnabled() ) LOGGER.logTrace ( this + ": creating connection proxy..." );
 		JdbcConnectionProxyHelper.setIsolationLevel ( connection , getDefaultIsolationLevel() );
+		// 这是一个InvocationHandler, 基于当前的连接Connection, 创建一个代理Connection
 		AtomikosJdbcConnectionProxy proxy = new AtomikosJdbcConnectionProxy(connection, sessionHandleState, localTransactionMode);
 		return proxy.createDynamicProxy();
 	}

@@ -187,6 +187,7 @@ extends AbstractDataSourceBean
 			}
 			
 			JdbcTransactionalResource tr = new JdbcTransactionalResource(getUniqueResourceName() , xaDataSource);
+			// 基于外部传入的XADatasource来创建连接的factory
 			ConnectionFactory<Connection> cf = new AtomikosXAConnectionFactory(xaDataSource, tr, this);
 			Configuration.addResource ( tr );
 			

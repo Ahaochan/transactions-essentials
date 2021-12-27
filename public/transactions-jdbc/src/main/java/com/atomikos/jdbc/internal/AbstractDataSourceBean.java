@@ -292,8 +292,10 @@ implements DataSource, ConnectionPoolProperties, Referenceable, Serializable, Or
 		}
 		
 		try {
+			// 初始化创建连接的factory, 交给子类AtomikosDataSourceBean实现
 			ConnectionFactory<Connection> cf = doInit();
 			if (enableConcurrentConnectionValidation) {
+				// enableConcurrentConnectionValidation默认是true, 初始化获取数据库连接的连接池
 				connectionPool = new ConnectionPoolWithConcurrentValidation<Connection>(cf, this);
 			} else {
 				if ( getTestQuery() != null ) 
@@ -346,6 +348,7 @@ implements DataSource, ConnectionPoolProperties, Referenceable, Serializable, Or
 		init();
 		
 		try {
+			// 从数据库连接池获取一个数据库连接
 			connection = connectionPool.borrowConnection();
 			
 		} catch (CreateConnectionException ex) {
