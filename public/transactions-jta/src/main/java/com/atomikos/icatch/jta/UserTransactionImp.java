@@ -68,6 +68,11 @@ public class UserTransactionImp implements UserTransaction, Serializable,
 
     public void begin () throws NotSupportedException, SystemException
     {
+        // org.springframework.transaction.jta.JtaTransactionManager.doJtaBegin
+        // spring jta规范会在doJtaBegin调用这个begin方法
+
+        // UserTransactionImp是全局唯一的, TransactionManager也是全局唯一的
+        // TransactionManager是在checkSetup()方法中初始化的, 具体实现类是TransactionManagerImp
         checkSetup ();
         txmgr_.begin ();
     }

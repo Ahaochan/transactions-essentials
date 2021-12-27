@@ -134,6 +134,7 @@ public class CompositeTransactionManagerImp implements CompositeTransactionManag
 
     private CompositeTransaction getCurrentTx ()
     {
+        // 获取当前线程的事务栈, 获取栈顶的事务
         Thread thread = Thread.currentThread ();
         synchronized ( threadtotxmap_ ) {
             Stack<CompositeTransaction> txs = threadtotxmap_.get ( thread );
@@ -183,7 +184,8 @@ public class CompositeTransactionManagerImp implements CompositeTransactionManag
 
     public CompositeTransaction getCompositeTransaction () throws SysException
     {
-        
+
+        // 获取当前线程的事务栈, 获取栈顶的事务
         CompositeTransaction ct = null;
         ct = getCurrentTx ();
         if ( ct != null ) {
@@ -393,9 +395,11 @@ public class CompositeTransactionManagerImp implements CompositeTransactionManag
     public CompositeTransaction createCompositeTransaction ( long timeout ) throws SysException
     {
         CompositeTransaction ct = null , ret = null;
-        
+
+        // 获取当前线程的事务栈, 获取栈顶的事务
         ct = getCurrentTx ();
         if ( ct == null ) {
+            // 如果没有事务, 就创建一个事务
             ret = getTransactionService().createCompositeTransaction ( timeout );
             if(LOGGER.isDebugEnabled()){
             	LOGGER.logDebug("createCompositeTransaction ( " + timeout + " ): "
@@ -405,9 +409,11 @@ public class CompositeTransactionManagerImp implements CompositeTransactionManag
         	 if(LOGGER.isDebugEnabled()) {
         	     LOGGER.logDebug("createCompositeTransaction ( " + timeout + " )");
         	 }
+             // 如果有事务, 就创建一个子事务
             ret = ct.createSubTransaction ();
 
         }
+        // 然后把这个事务压入当前线程的事务栈中
         Thread thread = Thread.currentThread ();
         setThreadMappings ( ret, thread );
 

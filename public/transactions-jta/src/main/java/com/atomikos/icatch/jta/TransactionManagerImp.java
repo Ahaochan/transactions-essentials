@@ -253,7 +253,8 @@ public class TransactionManagerImp implements TransactionManager,
     {
         CompositeTransaction ct = null;
         ResumePreviousTransactionSubTxAwareParticipant resumeParticipant = null;
-        
+
+        // 获取当前线程的事务栈, 获取栈顶的事务
         ct = compositeTransactionManager.getCompositeTransaction();
         if ( ct != null && ct.getProperty (  JTA_PROPERTY_NAME ) == null ) {
             LOGGER.logWarning ( "JTA: temporarily suspending incompatible transaction: " + ct.getTid() +
@@ -263,6 +264,8 @@ public class TransactionManagerImp implements TransactionManager,
         }
        
         try {
+            // 第一次拿出来的CompositeTransaction必然是null, 所以要去创建一个事务, 压入栈中
+            // 如果是第二次进来, 也要去创建一个子事务, 压入栈中
             ct = compositeTransactionManager.createCompositeTransaction ( ( ( long ) timeout ) * 1000 );
             if ( resumeParticipant != null ) ct.addSubTxAwareParticipant ( resumeParticipant );
             if(ct.isRoot() && timeout != defaultTimeoutInSecondsForNewTransactions) {
