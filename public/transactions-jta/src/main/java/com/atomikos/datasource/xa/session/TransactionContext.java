@@ -55,6 +55,7 @@ class TransactionContext {
 	 * @throws UnexpectedTransactionContextException If the current transaction context is not what would be expected.
 	 */
 	synchronized void checkEnlistBeforeUse ( CompositeTransaction ct ) throws InvalidSessionHandleStateException, UnexpectedTransactionContextException {
+		// 默认是NotInBranchStateHandler实现类
 		TransactionContextStateHandler nextState = state.checkEnlistBeforeUse ( ct );
 		setState ( nextState );
 	}

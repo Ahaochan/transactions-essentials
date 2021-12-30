@@ -216,6 +216,7 @@ public class XAResourceTransaction implements ResourceTransaction, Participant {
 						+ " represented by XAResource instance "
 						+ this.xaresource);
 			}
+			// 这里真正去执行XA START指令
 			this.xaresource.start(this.xid, flag);
 
 		} catch (XAException xaerr) {

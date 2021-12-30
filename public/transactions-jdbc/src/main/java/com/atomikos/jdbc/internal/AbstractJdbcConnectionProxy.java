@@ -55,6 +55,7 @@ public abstract class AbstractJdbcConnectionProxy extends DynamicProxySupport<Co
 	private <S extends Statement> S createProxyStatement(S s) {
 		AtomikosJdbcStatementProxy<S> ajsp = new AtomikosJdbcStatementProxy<>(this, s);
         S proxy = ajsp.createDynamicProxy();
+        // 将statement加入list暂存起来
         addStatement(s);
         return proxy;
 	}

@@ -66,6 +66,7 @@ class SiblingMapper
             throws ResourceException, IllegalStateException
     {
         XAResourceTransaction ret = findOrCreateBranchWithResourceException(ct);
+		// 在分布式事务加入子事务
         ct.addParticipant(ret);
         return ret;
     }

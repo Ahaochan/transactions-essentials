@@ -83,9 +83,12 @@ public class AtomikosJdbcConnectionProxy extends AbstractJdbcConnectionProxy {
 			CompositeTransaction ct = null;
 			CompositeTransactionManager ctm = getCompositeTransactionManager();
 			if (ctm != null) {
+				// 从分布式事务管理器里获取当前线程的事务栈的栈顶的事务
 				ct = ctm.getCompositeTransaction();
 				// first notify the session handle - see case 27857
+				// 发送XA START指令
 				sessionHandleState.notifyBeforeUse(ct);
+				//
 				if (ct != null && TransactionManagerImp.isJtaTransaction(ct)) {
 					ret = true;
 					if (LOGGER.isTraceEnabled()) {

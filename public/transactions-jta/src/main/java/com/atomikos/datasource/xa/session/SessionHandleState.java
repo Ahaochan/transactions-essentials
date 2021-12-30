@@ -160,6 +160,7 @@ public class SessionHandleState
 				//no suspended branch was found -> try to use the current branch
 				try {
 					if ( LOGGER.isTraceEnabled() ) LOGGER.logTrace ( this + ": checking XA context for transaction " + ct );
+					// 执行XA START指令
 					currentContext.checkEnlistBeforeUse ( ct );
 				}
 				catch ( UnexpectedTransactionContextException txBoundaryPassed ) {

@@ -348,7 +348,7 @@ implements DataSource, ConnectionPoolProperties, Referenceable, Serializable, Or
 		init();
 		
 		try {
-			// 从数据库连接池获取一个数据库连接
+			// 从数据库连接池获取一个数据库连接, 然后交给AtomikosJdbcConnectionProxy动态代理
 			connection = connectionPool.borrowConnection();
 			
 		} catch (CreateConnectionException ex) {
