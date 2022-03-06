@@ -117,6 +117,7 @@ public class AtomikosJdbcConnectionProxy extends AbstractJdbcConnectionProxy {
 	public void close() throws SQLException {
 		forceCloseAllPendingStatements(false);
 		markClosed();
+		// 代理了Connection的close()方法, 发送XA END指令
 		sessionHandleState.notifySessionClosed();
 	}
 

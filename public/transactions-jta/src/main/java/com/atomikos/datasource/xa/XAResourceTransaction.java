@@ -173,6 +173,7 @@ public class XAResourceTransaction implements ResourceTransaction, Participant {
 							+ " represented by XAResource instance "
 							+ this.xaresource);
 				}
+				// 发送XA END指令
 				this.xaresource.end(this.xid, XAResource.TMSUCCESS);
 
 			} catch (XAException xaerr) {

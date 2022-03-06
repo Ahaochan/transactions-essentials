@@ -108,9 +108,11 @@ public class SessionHandleState
 		synchronized ( this ) {
 			boolean alreadyTerminated = isTerminated();
 			Iterator<TransactionContext> it = allContexts.iterator();
+			// 遍历所有开启的子事务
 			while ( it.hasNext() ) {
 				TransactionContext b =  it.next();
 				if ( LOGGER.isTraceEnabled() ) LOGGER.logTrace ( this + ": delegating session close to " + b ) ;
+				// 一个个去发送XA END指令
 				b.sessionClosed();
 			}
 			closed = true;

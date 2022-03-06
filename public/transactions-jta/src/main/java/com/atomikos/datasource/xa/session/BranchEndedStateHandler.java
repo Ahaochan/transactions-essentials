@@ -32,6 +32,7 @@ extends TransactionContextStateHandler
 	{
 		super ( resource , null );
 		this.ct = ct;
+		// 发送XA END指令
 		branch.suspend();
 	}
 

@@ -41,6 +41,7 @@ class BranchSuspendedStateHandler extends TransactionContextStateHandler
 
 	TransactionContextStateHandler sessionClosed() 
 	{
+		// 在创建BranchEndedStateHandler的构造函数内, 就去发送XA END指令了
 		return new BranchEndedStateHandler ( getXATransactionalResource() , branch , ct );
 	}
 

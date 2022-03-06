@@ -65,6 +65,7 @@ class TransactionContext {
 	 *
 	 */
 	synchronized void sessionClosed() {
+		// 调用BranchSuspendedStateHandler的sessionClosed()方法去发送XA END指令
 		TransactionContextStateHandler nextState = state.sessionClosed();
 		setState ( nextState );
 	}
