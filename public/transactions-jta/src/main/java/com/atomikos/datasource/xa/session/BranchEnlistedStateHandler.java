@@ -37,6 +37,7 @@ class BranchEnlistedStateHandler extends TransactionContextStateHandler
 		this.ct = ct;
 		this.branch = ( XAResourceTransaction ) resource.getResourceTransaction ( ct );
 		branch.setXAResource ( xaResource );
+		// 发送XA START指令
 		branch.resume();
 	}
 

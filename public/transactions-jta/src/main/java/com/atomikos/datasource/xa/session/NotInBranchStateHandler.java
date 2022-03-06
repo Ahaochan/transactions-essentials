@@ -43,7 +43,7 @@ class NotInBranchStateHandler extends TransactionContextStateHandler
 
 			//JTA transaction found for calling thread -> enlist
 			//also see the state diagram documentation
-			// 执行XA START指令
+			// BranchEnlistedStateHandler的构造器去执行XA START指令
 			ret = new BranchEnlistedStateHandler ( getXATransactionalResource() , ct , getXAResource() );
 
 		}
