@@ -681,9 +681,11 @@ public class CoordinatorImp implements CompositeCoordinator, Participant,
     			if ( participants_.size () <= 1 ) {
     				commit ( true );
     			} else {
+                    // 执行PREPARE
     				int prepareResult = prepare ();
     				// make sure to only do commit if NOT read only
     				if ( prepareResult != Participant.READ_ONLY )
+                        // 再执行COMMIT
     					commit ( false );
     			}
     		} else {

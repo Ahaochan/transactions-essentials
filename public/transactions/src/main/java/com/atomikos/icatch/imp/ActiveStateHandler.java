@@ -158,6 +158,7 @@ class ActiveStateHandler extends CoordinatorStateHandler
             count = participants.size ();
             result = new PrepareResult ( count );
             Enumeration<Participant> enumm = participants.elements ();
+            // 遍历每个Participant子事务
             while ( enumm.hasMoreElements () ) {
                 Participant p = (Participant) enumm.nextElement ();
                 PrepareMessage pm = new PrepareMessage ( p, result );
@@ -252,6 +253,7 @@ class ActiveStateHandler extends CoordinatorStateHandler
             // 2PC commit
 
             setGlobalSiblingCount ( 1 );
+            // 发送XA PREPARE指令
             prepareResult = prepare ();
             
             if ( prepareResult != Participant.READ_ONLY ) {

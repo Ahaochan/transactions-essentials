@@ -305,6 +305,7 @@ public class XAResourceTransaction implements ResourceTransaction, Participant {
 				LOGGER.logTrace("About to call prepare on XAResource instance: "
 						+ this.xaresource);
 			}
+			// 真正去执行XA PREPARE指令
 			ret = this.xaresource.prepare(this.xid);
 
 		} catch (XAException xaerr) {
