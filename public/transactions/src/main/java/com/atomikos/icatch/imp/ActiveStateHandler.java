@@ -170,15 +170,19 @@ class ActiveStateHandler extends CoordinatorStateHandler
                     p.setCascadeList ( getCascadeList () );
                 }
 
+                // 对每个子事务发送PREPARE指令
                 getPropagator ().submitPropagationMessage ( pm );
             } // while
 
+            // 阻塞, 等待所有子事务都返回PREPARE的响应结果
             result.waitForReplies ();
 
+            // 判断所有子事务是否都PREPARE成功
             boolean voteOK = result.allYes ();
             setReadOnlyTable ( result.getReadOnlyTable () );
             allReadOnly = result.allReadOnly ();
 
+            // 任一子事务执行PREPARE失败, 就执行回滚逻辑
             if ( !voteOK ) {
             	int res = result.getResult ();
             	Exception cause = result.findFirstOriginalException();
